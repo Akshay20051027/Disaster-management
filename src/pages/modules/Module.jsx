@@ -16,11 +16,11 @@ const Module = () => {
   const [error, setError] = useState(null);
 
   // Placeholder for module content — replace with API data if available
-  const [moduleContent, setModuleContent] = useState({
+  const moduleContent = {
     title: "Module Title",
     theory: "This is the theory content for the module...",
     videoUrl: "https://www.youtube.com/embed/example"
-  });
+  };
 
   useEffect(() => {
     if (!courseId || !moduleId) return; // prevent undefined API calls

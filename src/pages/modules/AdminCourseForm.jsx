@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Container, Typography, TextField, Button, Box, Paper, Stepper, Step, StepLabel,
-  Card, CardContent, Accordion, AccordionSummary, AccordionDetails,
+  Card, Accordion, AccordionSummary, AccordionDetails,
   RadioGroup, FormControlLabel, Radio, Snackbar, Alert, ToggleButtonGroup, ToggleButton
 } from '@mui/material';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
