@@ -1,0 +1,15 @@
+# dependencies
+node_modules/
+backend/node_modules/
+
+# local env files
+.env
+backend/.env
+
+# build output
+build/
+
+# misc
+.DS_Store
+npm-debug.log*
+coverage/

@@ -1,0 +1,23 @@
+# Render deployment manifest (single Web Service that builds frontend and runs backend)
+# Edit secrets in the Render dashboard; do NOT put production secrets here.
+services:
+  - type: web
+    name: dis-backend
+    env: node
+    plan: free
+    branch: main
+    # Build frontend (root) and backend deps. This produces the `build/` folder in the repo root.
+    buildCommand: >-
+      npm install && npm --prefix backend install && npm run build
+    # Start the backend which will serve the built frontend in production (server.js handles this)
+    startCommand: npm --prefix backend start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Sensitive values: set these as secrets in the Render dashboard, not in this file
+      - key: MONGODB_URI
+        value: ''
+      - key: JWT_SECRET
+        value: ''
+      - key: FRONTEND_URL
+        value: ''
