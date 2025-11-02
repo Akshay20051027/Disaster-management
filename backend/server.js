@@ -49,8 +49,10 @@ if (process.env.NODE_ENV === 'production') {
   const clientBuildPath = path.join(__dirname, '..', 'build');
   app.use(express.static(clientBuildPath));
 
-  // Let API and uploads continue to work; send index.html for other GET requests
-  app.get('/*', (req, res, next) => {
+  // Let API and uploads continue to work; send index.html for other GET requests.
+  // Use a middleware instead of a wildcard route to avoid path parsing issues on some platforms.
+  app.use((req, res, next) => {
+    if (req.method !== 'GET') return next();
     if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) return next();
     res.sendFile(path.join(clientBuildPath, 'index.html'));
   });
