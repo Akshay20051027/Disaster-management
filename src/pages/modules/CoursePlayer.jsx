@@ -283,7 +283,8 @@ const CoursePlayer = () => {
   }, [courseId, selectedItem]);
 
   // The fetchModules function already includes `courseId` in its dependencies via useCallback.
-  // Include `courseId` in the dependency array as well to satisfy the linter.
+  // ESLint may still warn about `courseId` here; explicitly ignore the exhaustive-deps rule for this line.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     // Guard against missing or string 'undefined' courseId (e.g., bad link like /courses/undefined/player)
     if (!courseId || courseId === 'undefined') {
@@ -293,7 +294,7 @@ const CoursePlayer = () => {
       return;
     }
     fetchModules();
-  }, [fetchModules, courseId]);
+  }, [fetchModules]);
 
   if (loading) return <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}><CircularProgress size={60} /></Box>;
   if (error) return <Box sx={{ p: 3 }}><Alert severity="error">{error}</Alert></Box>;
