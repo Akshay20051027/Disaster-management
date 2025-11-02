@@ -282,6 +282,8 @@ const CoursePlayer = () => {
       .finally(() => setLoading(false));
   }, [courseId, selectedItem]);
 
+  // The fetchModules function already includes `courseId` in its dependencies via useCallback.
+  // Include `courseId` in the dependency array as well to satisfy the linter.
   useEffect(() => {
     // Guard against missing or string 'undefined' courseId (e.g., bad link like /courses/undefined/player)
     if (!courseId || courseId === 'undefined') {
@@ -291,7 +293,7 @@ const CoursePlayer = () => {
       return;
     }
     fetchModules();
-  }, [fetchModules]);
+  }, [fetchModules, courseId]);
 
   if (loading) return <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}><CircularProgress size={60} /></Box>;
   if (error) return <Box sx={{ p: 3 }}><Alert severity="error">{error}</Alert></Box>;
