@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
+const fs = require('fs');
 
 dotenv.config();
 
@@ -47,15 +48,27 @@ app.use('/api', miscRoutes); // donations, requests, persons
 // Serve frontend build in production (if present)
 if (process.env.NODE_ENV === 'production') {
   const clientBuildPath = path.join(__dirname, '..', 'build');
-  app.use(express.static(clientBuildPath));
 
-  // Let API and uploads continue to work; send index.html for other GET requests.
-  // Use a middleware instead of a wildcard route to avoid path parsing issues on some platforms.
-  app.use((req, res, next) => {
-    if (req.method !== 'GET') return next();
-    if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) return next();
-    res.sendFile(path.join(clientBuildPath, 'index.html'));
-  });
+  // If the frontend `build/index.html` is missing (e.g., build step didn't run),
+  // don't attempt to serve static files (that causes ENOENT errors in logs).
+  const indexHtmlPath = path.join(clientBuildPath, 'index.html');
+  if (fs.existsSync(indexHtmlPath)) {
+    app.use(express.static(clientBuildPath));
+
+    // Let API and uploads continue to work; send index.html for other GET requests.
+    // Use a middleware instead of a wildcard route to avoid path parsing issues on some platforms.
+    app.use((req, res, next) => {
+      if (req.method !== 'GET') return next();
+      if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) return next();
+      res.sendFile(indexHtmlPath);
+    });
+  } else {
+    console.warn(`⚠️ Frontend build not found at ${indexHtmlPath}. Static serving disabled.`);
+    // Provide a lightweight root health route so the service still responds to GET /
+    app.get('/', (req, res) => {
+      res.json({ success: false, message: 'Frontend build not found on server. Please run the build step.' });
+    });
+  }
 } else {
   // Root route for non-production (simple health check)
   app.get('/', (req, res) => {
