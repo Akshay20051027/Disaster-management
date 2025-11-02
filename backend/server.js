@@ -50,7 +50,7 @@ if (process.env.NODE_ENV === 'production') {
   app.use(express.static(clientBuildPath));
 
   // Let API and uploads continue to work; send index.html for other GET requests
-  app.get('*', (req, res, next) => {
+  app.get('/*', (req, res, next) => {
     if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) return next();
     res.sendFile(path.join(clientBuildPath, 'index.html'));
   });
